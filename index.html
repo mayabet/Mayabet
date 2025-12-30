@@ -37,21 +37,147 @@
 </div>
 
 <div id="matches-container">
-    <div class="match-box">
-        <span class="teams">Man City vs Liverpool</span>
-        <div class="odds-row">
-            <div class="odd-btn" onclick="pick(this, 'm1', '1', 1.85)"><span class="m-name">1</span><span class="m-val">1.85</span></div>
-            <div class="odd-btn" onclick="pick(this, 'm1', 'X', 3.60)"><span class="m-name">X</span><span class="m-val">3.60</span></div>
-            <div class="odd-btn" onclick="pick(this, 'm1', '2', 4.10)"><span class="m-name">2</span><span class="m-val">4.10</span></div>
-            <div class="odd-btn" onclick="pick(this, 'm1', '1X', 1.25)"><span class="m-name">1X</span><span class="m-val">1.25</span></div>
-            <div class="odd-btn" onclick="pick(this, 'm1', '2X', 1.95)"><span class="m-name">2X</span><span class="m-val">1.95</span></div>
-            <div class="odd-btn" onclick="pick(this, 'm1', '12', 1.22)"><span class="m-name">12</span><span class="m-val">1.22</span></div>
-        </div>
-    </div>
+    <script>
+        const matchData = [
+            { id: "m1", teams: "Arsenal vs Wolves" },
+            { id: "m2", teams: "Real Madrid vs Girona" },
+            { id: "m3", teams: "Liverpool vs Aston Villa" },
+            { id: "m4", teams: "Bayern Munich vs Frankfurt" },
+            { id: "m5", teams: "Inter Milan vs Napoli" },
+            { id: "m6", teams: "PSG vs Monaco" },
+            { id: "m7", teams: "Chelsea vs Tottenham" },
+            { id: "m8", teams: "Barcelona vs Sevilla" },
+            { id: "m9", teams: "Man City vs Fulham" },
+            { id: "m10", teams: "Dortmund vs Leverkusen" },
+            { id: "m11", teams: "Juventus vs Lazio" },
+            { id: "m12", teams: "Man United vs Leicester" },
+            { id: "m13", teams: "Brighton vs West Ham" },
+            { id: "m14", teams: "Newcastle vs Everton" },
+            { id: "m15", teams: "AC Milan vs Roma" },
+            { id: "m16", teams: "Atletico Madrid vs Bilbao" },
+            { id: "m17", teams: "Fiorentina vs Atalanta" },
+            { id: "m18", teams: "Ajax vs PSV" },
+            { id: "m19", teams: "Benfica vs Porto" },
+            { id: "m20", teams: "Sporting CP vs Braga" }
+        ];
+
+        let html = "";
+        matchData.forEach(m => {
+            html += `
+            <div class="match-box">
+                <span class="teams">${m.teams}</span>
+                <div class="odds-row">
+                    <div class="odd-btn" onclick="pick(this, '${m.id}', '1', 2.10)"><span class="m-name">1</span><span class="m-val">2.10</span></div>
+                    <div class="odd-btn" onclick="pick(this, '${m.id}', 'X', 3.40)"><span class="m-name">X</span><span class="m-val">3.40</span></div>
+                    <div class="odd-btn" onclick="pick(this, '${m.id}', '2', 3.20)"><span class="m-name">2</span><span class="m-val">3.20</span></div>
+                    <div class="odd-btn" onclick="pick(this, '${m.id}', '1X', 1.35)"><span class="m-name">1X</span><span class="m-val">1.35</span></div>
+                    <div class="odd-btn" onclick="pick(this, '${m.id}', '2X', 1.65)"><span class="m-name">2X</span><span class="m-val">1.65</span></div>
+                    <div class="odd-btn" onclick="pick(this, '${m.id}', '12', 1.25)"><span class="m-name">12</span><span class="m-val">1.25</span></div>
+                </div>
+            </div>`;
+        });
+        document.getElementById('matches-container').innerHTML = html;
+    </script>
 </div>
 
 <div class="overlay" id="ovr" onclick="closeM()"></div>
 <div id="betModal">
     <h3 id="mTitle" style="color:#38bdf8; margin-top:0;">ውርርድዎን ያጽኑ</h3>
     <p id="totalO" style="font-size: 16px; font-weight: bold;"></p>
-    <
+    <input type="number" id="amt" placeholder="መወራረጃ ብር (Min 10)">
+    <input type="text" id="txn" placeholder="የትራንዛክሽን ኮድ">
+    <button class="btn-confirm" onclick="finish()" id="fBtn">ውርርዱን ቁረጥ</button>
+</div>
+
+<button class="slip-bar" id="sBar" onclick="openM()">
+    BET SLIP (0 ጨዋታ)
+</button>
+
+<script>
+    let myBets = [];
+    let lang = 'am';
+
+    function changeLang() {
+        if (lang === 'am') {
+            lang = 'en';
+            document.getElementById('lBtn').innerText = 'አማርኛ';
+            document.getElementById('pText').innerHTML = 'Telebirr: <a href="tel:0978272061">0978272061</a>';
+            document.getElementById('mTitle').innerText = 'Confirm Bet';
+            document.getElementById('amt').placeholder = 'Stake (Min 10)';
+            document.getElementById('txn').placeholder = 'TXN Code';
+            document.getElementById('fBtn').innerText = 'Submit Bet';
+        } else {
+            lang = 'am';
+            document.getElementById('lBtn').innerText = 'English';
+            document.getElementById('pText').innerHTML = 'ቴሌብር: <a href="tel:0978272061">0978272061</a>';
+            document.getElementById('mTitle').innerText = 'ውርርድዎን ያጽኑ';
+            document.getElementById('amt').placeholder = 'መወራረጃ ብር (Min 10)';
+            document.getElementById('txn').placeholder = 'የትራንዛክሽን ኮድ';
+            document.getElementById('fBtn').innerText = 'ውርርዱን ቁረጥ';
+        }
+        updateBar();
+    }
+
+    function pick(el, mid, name, val) {
+        myBets = myBets.filter(x => x.mid !== mid);
+        let row = el.parentElement.querySelectorAll('.odd-btn');
+        row.forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+        let tName = el.closest('.match-box').querySelector('.teams').innerText;
+        myBets.push({ mid, tName, name, val });
+        updateBar();
+    }
+
+    function updateBar() {
+        let txt = lang === 'am' ? `BET SLIP (${myBets.length} ጨዋታ)` : `BET SLIP (${myBets.length} Matches)`;
+        document.getElementById('sBar').innerText = txt;
+        document.getElementById('sBar').style.background = myBets.length >= 5 ? '#10b981' : '#38bdf8';
+    }
+
+    function openM() {
+        if (myBets.length < 5) {
+            alert(lang === 'am' ? "ቢያንስ 5 ጨዋታ ይምረጡ!" : "Select at least 5 matches!");
+            return;
+        }
+        let odd = 1;
+        myBets.forEach(x => odd *= x.val);
+        document.getElementById('totalO').innerText = (lang === 'am' ? "ጠቅላላ ኦድ: " : "Total Odds: ") + odd.toFixed(2);
+        document.getElementById('betModal').style.display = 'block';
+        document.getElementById('ovr').style.display = 'block';
+    }
+
+    function closeM() {
+        document.getElementById('betModal').style.display = 'none';
+        document.getElementById('ovr').style.display = 'none';
+    }
+
+    function finish() {
+        let a = document.getElementById('amt').value;
+        let t = document.getElementById('txn').value;
+        if (a < 10 || t.length < 4) {
+            alert(lang === 'am' ? "መረጃውን በትክክል ይሙሉ!" : "Fill info correctly!");
+            return;
+        }
+
+        const botToken = "8028281216:AAEOBK8DLzyMhYRkn0OzN6071wc4J6J5-Zo";
+        const chatId = "8389160128";
+        
+        let msg = `🔔 አዲስ ውርርድ (MAYA BET)!\n\n💰 ብር: ${a} ETB\n🔢 TXN ID: ${t}\n📈 ኦድ: ${document.getElementById('totalO').innerText}\n\n⚽ ጨዋታዎች:\n`;
+        myBets.forEach((b, i) => {
+            msg += `${i+1}. ${b.tName} -> ${b.name} (${b.val})\n`;
+        });
+
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`)
+        .then(res => {
+            if(res.ok) {
+                alert(lang === 'am' ? "ውርርድዎ ለ MAYA BET ተልኳል!" : "Bet Sent to MAYA BET!");
+                location.reload();
+            } else {
+                alert("Error sending to Telegram!");
+            }
+        });
+    }
+</script>
+</body>
+</html>
+
