@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maya Betting</title>
+    <style>
+        body { font-family: sans-serif; background-color: #0b1120; color: white; margin: 0; padding-bottom: 80px; }
+        .top-nav { background: #1e293b; padding: 12px; border-bottom: 2px solid #38bdf8; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .brand { font-weight: 900; font-size: 20px; color: #38bdf8; }
+        .lang-btn { background: #334155; color: #38bdf8; border: 1px solid #38bdf8; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .pay-info { background: #1e293b; color: white; text-align: center; padding: 12px; font-weight: bold; border-bottom: 1px solid #334155; }
+        .pay-info a { color: #ffcc00; text-decoration: none; font-size: 18px; font-weight: 900; }
+        .match-box { background: #1e293b; margin: 4px 0; padding: 10px; border-bottom: 1px solid #334155; }
+        .teams { font-weight: bold; font-size: 14px; margin-bottom: 8px; display: block; color: #f1f5f9; }
+        .odds-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+        .odd-btn { background: #334155; border: 1px solid #475569; border-radius: 4px; text-align: center; padding: 8px 2px; cursor: pointer; }
+        .odd-btn.selected { background: #38bdf8 !important; color: #000 !important; }
+        .m-name { display: block; font-weight: 900; color: #38bdf8; font-size: 10px; }
+        .m-val { font-weight: bold; font-size: 11px; display: block; }
+        .slip-bar { position: fixed; bottom: 0; width: 100%; background: #38bdf8; color: #0f172a; padding: 16px; text-align: center; font-weight: 900; font-size: 16px; border: none; }
+        #betModal { display: none; position: fixed; top: 15%; left: 5%; width: 90%; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #38bdf8; z-index: 1000; box-sizing: border-box; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #38bdf8; background: #0f172a; color: white; box-sizing: border-box; }
+        .btn-confirm { background: #10b981; color: white; border: none; padding: 15px; width: 100%; font-weight: bold; border-radius: 6px; }
+    </style>
+</head>
+<body>
+
+<div class="top-nav">
+    <div class="brand">MAYA BET</div>
+    <button class="lang-btn" onclick="changeLang()" id="lBtn">English</button>
+</div>
+
+<div class="pay-info" id="pText">
+    ቴሌብር: <a href="tel:0978272061">0978272061</a>
+</div>
+
+<div id="matches-container">
+    <div class="match-box">
+        <span class="teams">Man City vs Liverpool</span>
+        <div class="odds-row">
+            <div class="odd-btn" onclick="pick(this, 'm1', '1', 1.85)"><span class="m-name">1</span><span class="m-val">1.85</span></div>
+            <div class="odd-btn" onclick="pick(this, 'm1', 'X', 3.60)"><span class="m-name">X</span><span class="m-val">3.60</span></div>
+            <div class="odd-btn" onclick="pick(this, 'm1', '2', 4.10)"><span class="m-name">2</span><span class="m-val">4.10</span></div>
+            <div class="odd-btn" onclick="pick(this, 'm1', '1X', 1.25)"><span class="m-name">1X</span><span class="m-val">1.25</span></div>
+            <div class="odd-btn" onclick="pick(this, 'm1', '2X', 1.95)"><span class="m-name">2X</span><span class="m-val">1.95</span></div>
+            <div class="odd-btn" onclick="pick(this, 'm1', '12', 1.22)"><span class="m-name">12</span><span class="m-val">1.22</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="ovr" onclick="closeM()"></div>
+<div id="betModal">
+    <h3 id="mTitle" style="color:#38bdf8; margin-top:0;">ውርርድዎን ያጽኑ</h3>
+    <p id="totalO" style="font-size: 16px; font-weight: bold;"></p>
+    <
